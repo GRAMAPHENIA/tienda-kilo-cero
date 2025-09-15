@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Reportar Bug - Tienda Kilo Cero';
+---
+
+<BaseLayout title={title}>
+	<section class="py-32">
+		<div class="space-y-16">
+			<div class="text-center space-y-4">
+				<h1 class="text-4xl md:text-5xl font-title font-light text-header-text tracking-tight">
+					Reportar un Bug
+				</h1>
+				<p class="text-xl font-light text-header-text/70 max-w-2xl mx-auto leading-relaxed">
+					¿Encontraste un problema en el sitio? Ayúdanos a mejorar reportándolo aquí.
+				</p>
+			</div>
+
+			<div class="max-w-2xl mx-auto">
+				<form action="mailto:bugs@tiendakilocero.com" method="post" enctype="text/plain" class="space-y-8">
+					<div class="space-y-2">
+						<label for="name" class="block text-lg font-light text-header-text tracking-wide">Nombre</label>
+						<input type="text" id="name" name="name" required class="w-full px-6 py-4 bg-transparent border border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40" placeholder="Tu nombre" />
+					</div>
+					<div class="space-y-2">
+						<label for="email" class="block text-lg font-light text-header-text tracking-wide">Email</label>
+						<input type="email" id="email" name="email" required class="w-full px-6 py-4 bg-transparent border border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40" placeholder="tu@email.com" />
+					</div>
+					<div class="space-y-2">
+						<label for="bug-description" class="block text-lg font-light text-header-text tracking-wide">Descripción del Bug</label>
+						<textarea id="bug-description" name="bug-description" rows="6" required class="w-full px-6 py-4 bg-transparent border border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40 resize-none" placeholder="Describe el problema que encontraste, incluyendo pasos para reproducirlo..."></textarea>
+					</div>
+					<div class="pt-4">
+						<button type="submit" class="w-full bg-primary text-primary-text px-8 py-4 font-light tracking-wider hover:bg-secondary transition-all duration-500 ease-out text-lg">
+							Enviar Reporte
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+</BaseLayout>

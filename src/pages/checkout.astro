@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Checkout - Tienda Kilo Cero';
+---
+
+<BaseLayout title={title}>
+	<section class="py-32">
+		<div class="space-y-16">
+			<div class="text-center space-y-4">
+				<h1 class="text-4xl md:text-5xl font-title font-light text-header-text tracking-tight">
+					Finalizar Compra
+				</h1>
+				<p class="text-xl font-light text-header-text/70 max-w-2xl mx-auto leading-relaxed">
+					Completa tu información para procesar el pedido
+				</p>
+			</div>
+
+			<div class="max-w-2xl mx-auto space-y-12">
+				<form id="checkout-form" class="space-y-8">
+					<div class="space-y-6">
+						<label for="name" class="block text-lg font-light text-header-text tracking-wide">Nombre Completo</label>
+						<input type="text" id="name" name="name" required class="w-full px-6 py-4 bg-transparent border-b border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40" />
+					</div>
+					<div class="space-y-6">
+						<label for="email" class="block text-lg font-light text-header-text tracking-wide">Correo Electrónico</label>
+						<input type="email" id="email" name="email" required class="w-full px-6 py-4 bg-transparent border-b border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40" />
+					</div>
+					<div class="space-y-6">
+						<label for="address" class="block text-lg font-light text-header-text tracking-wide">Dirección de Envío</label>
+						<textarea id="address" name="address" required class="w-full px-6 py-4 bg-transparent border-b border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40 resize-none" rows="4"></textarea>
+					</div>
+				</form>
+
+				<div class="border-t border-header-text/10 pt-8 space-y-6">
+					<h3 class="text-2xl font-light text-header-text tracking-wide">Resumen del Pedido</h3>
+					<div id="order-summary" class="space-y-4">
+						<!-- Resumen se cargará dinámicamente -->
+					</div>
+					<div class="flex justify-between items-center pt-6 border-t border-header-text/10">
+						<span class="text-xl font-light text-header-text tracking-wide">Total</span>
+						<span class="text-3xl font-light text-primary">$<span id="checkout-total">0</span></span>
+					</div>
+				</div>
+
+				<div class="pt-8">
+					<button id="pay-button" class="w-full bg-primary text-primary-text py-4 font-light tracking-wider hover:bg-secondary transition-all duration-500 ease-out text-lg">
+						Pagar con MercadoPago
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="https://sdk.mercadopago.com/js/v2"></script>
+	<script>
+		declare const MercadoPago: any;
+		import { CartService } from '../lib/cartService';
+
+		document.addEventListener('DOMContentLoaded', () => {
+			const orderSummary = document.getElementById('order-summary') as HTMLElement | null;
+			const checkoutTotal = document.getElementById('checkout-total') as HTMLElement | null;
+			const payButton = document.getElementById('pay-button') as HTMLButtonElement | null;
+
+			function renderOrderSummary() {
+				const cart = CartService.getCart();
+				const total = CartService.getTotal();
+
+				if (!orderSummary || !payButton) {
+					console.error('Elementos del DOM no encontrados');
+					return;
+				}
+
+				if (cart.length === 0) {
+					orderSummary.innerHTML = '<p>No hay productos en el carrito</p>';
+					payButton.disabled = true;
+				} else {
+					orderSummary.innerHTML = cart.map(item => `
+						<div class="flex justify-between">
+							<span>${item.nombre} x${item.cantidad}</span>
+							<span>$${(item.precio * item.cantidad).toFixed(2)}</span>
+						</div>
+					`).join('');
+					payButton.disabled = false;
+				}
+
+				if (checkoutTotal) {
+					checkoutTotal.textContent = total.toFixed(2);
+				}
+			}
+
+			renderOrderSummary();
+
+			// Evento para el botón de pago
+			if (payButton) {
+				payButton.addEventListener('click', async (e) => {
+					e.preventDefault();
+
+					const form = document.getElementById('checkout-form') as HTMLFormElement | null;
+					if (!form) {
+						console.error('Formulario no encontrado');
+						return;
+					}
+
+					if (!form.checkValidity()) {
+						form.reportValidity();
+						return;
+					}
+
+					// Verificar si MercadoPago está disponible
+					if (typeof MercadoPago === 'undefined') {
+						console.error('MercadoPago SDK no cargado');
+						alert('Error: SDK de MercadoPago no disponible');
+						return;
+					}
+
+					// Inicializar MercadoPago
+					const mp = new MercadoPago('TEST-1234567890123456'); // Public key de test
+
+					const cart = CartService.getCart();
+
+					// Crear items para MercadoPago
+					const items = cart.map(item => ({
+						title: item.nombre,
+						quantity: item.cantidad,
+						unit_price: item.precio
+					}));
+
+					// Simular creación de preference (en producción, esto se hace en el backend)
+					const preference = {
+						items: items,
+						back_urls: {
+							success: window.location.origin + '/success',
+							failure: window.location.origin + '/failure',
+							pending: window.location.origin + '/pending'
+						},
+						auto_return: 'approved'
+					};
+
+					try {
+						// En producción, enviar preference al backend para crear la preference ID
+						// Aquí simulamos una preference ID
+						const preferenceId = '123456789'; // Simulado
+
+						// Redirigir al checkout de MercadoPago
+						mp.checkout({
+							preference: {
+								id: preferenceId
+							},
+							render: {
+								container: '', // Modal
+								label: 'Pagar'
+							}
+						});
+					} catch (error) {
+						console.error('Error al procesar el pago:', error);
+						alert('Error al procesar el pago. Intente nuevamente.');
+					}
+				});
+			}
+		});
+	</script>
+</BaseLayout>

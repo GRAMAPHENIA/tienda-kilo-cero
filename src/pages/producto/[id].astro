@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+	const productos = [
+		{ id: 1, nombre: 'Producto 1', descripcion: 'Descripción detallada del producto 1', precio: 100, imagen: '/placeholder.svg' },
+		{ id: 2, nombre: 'Producto 2', descripcion: 'Descripción detallada del producto 2', precio: 200, imagen: '/placeholder.svg' },
+		{ id: 3, nombre: 'Producto 3', descripcion: 'Descripción detallada del producto 3', precio: 150, imagen: '/placeholder.svg' }
+	];
+
+	return productos.map(producto => ({
+		params: { id: producto.id.toString() },
+		props: { producto }
+	}));
+}
+
+const { producto } = Astro.props;
+const title = `${producto.nombre} - Tienda Kilo Cero`;
+---
+
+<BaseLayout title={title}>
+	<section class="max-w-4xl mx-auto">
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+			<div>
+				<img src={producto.imagen} alt={producto.nombre} class="w-full rounded-lg shadow-md" />
+			</div>
+			<div>
+				<h1 class="text-3xl font-title font-bold mb-4">{producto.nombre}</h1>
+				<p class="text-timberwolf mb-6">{producto.descripcion}</p>
+				<div class="text-4xl font-bold text-keppel mb-6">${producto.precio}</div>
+				<button
+					id="add-to-cart"
+					data-product-id={producto.id}
+					class="bg-timberwolf text-platinum px-6 py-3 rounded-lg font-medium hover:bg-onyx transition duration-300"
+				>
+					Agregar al Carrito
+				</button>
+			</div>
+		</div>
+	</section>
+
+	<script define:vars={{ producto }}>
+		import { CartService } from '../../lib/cartService';
+
+		document.getElementById('add-to-cart')?.addEventListener('click', () => {
+			const productId = parseInt(document.getElementById('add-to-cart').dataset.productId);
+			const productoData = { id: productId, nombre: producto.nombre, precio: producto.precio, imagen: producto.imagen };
+			CartService.addToCart(productoData);
+			alert(`Producto ${producto.nombre} agregado al carrito`);
+		});
+	</script>
+</BaseLayout>

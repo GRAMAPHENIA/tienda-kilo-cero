@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Inicio - Tienda Kilo Cero';
+---
+
+<BaseLayout title={title}>
+	<!-- Hero Section -->
+	<section class="text-center py-32 md:py-40">
+		<div class="space-y-8">
+			<h1 class="text-6xl md:text-7xl font-title font-light text-header-text tracking-tight leading-tight">
+				Tienda Kilo Cero
+			</h1>
+			<p class="text-xl md:text-2xl font-light text-header-text/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
+				Descubre productos únicos con diseño minimalista y pagos seguros
+			</p>
+			<div class="pt-8">
+				<a href="/productos" class="inline-block bg-primary text-primary-text px-12 py-4 font-light tracking-wider hover:bg-secondary transition-all duration-500 ease-out text-lg">
+					Explorar Productos
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- Features Section -->
+	<section class="py-32">
+		<div class="space-y-24">
+			<div class="text-center space-y-4">
+				<h2 class="text-4xl md:text-5xl font-title font-light text-header-text tracking-tight">
+					Por qué elegirnos
+				</h2>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-24">
+				<div class="text-center space-y-6">
+					<div class="w-16 h-16 mx-auto border border-header-text/20 rounded-full flex items-center justify-center">
+						<img src="/icons/figma.svg" alt="Diseño" class="w-8 h-8" />
+					</div>
+					<h3 class="text-2xl font-light text-header-text tracking-wide">Diseño Minimalista</h3>
+					<p class="text-header-text/70 leading-relaxed max-w-sm mx-auto">Productos con un enfoque en la simplicidad y la elegancia.</p>
+				</div>
+				<div class="text-center space-y-6">
+					<div class="w-16 h-16 mx-auto border border-header-text/20 rounded-full flex items-center justify-center">
+						<img src="/icons/lock-keyhole.svg" alt="Seguridad" class="w-8 h-8" />
+					</div>
+					<h3 class="text-2xl font-light text-header-text tracking-wide">Pagos Seguros</h3>
+					<p class="text-header-text/70 leading-relaxed max-w-sm mx-auto">Integración completa con MercadoPago para transacciones seguras.</p>
+				</div>
+				<div class="text-center space-y-6">
+					<div class="w-16 h-16 mx-auto border border-header-text/20 rounded-full flex items-center justify-center">
+						<img src="/icons/zap.svg" alt="Rápido" class="w-8 h-8" />
+					</div>
+					<h3 class="text-2xl font-light text-header-text tracking-wide">Envío Rápido</h3>
+					<p class="text-header-text/70 leading-relaxed max-w-sm mx-auto">Entrega rápida y confiable a tu puerta.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Featured Products -->
+	<section class="py-32">
+		<div class="space-y-16">
+			<div class="text-center space-y-4">
+				<h2 class="text-4xl md:text-5xl font-title font-light text-header-text tracking-tight">
+					Productos Destacados
+				</h2>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
+				<div class="group cursor-pointer">
+					<div class="aspect-square overflow-hidden mb-8">
+						<img src="/placeholder.svg" alt="Producto 1" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" style="background-color: rgba(229, 230, 228, 0.7);" />
+					</div>
+					<div class="space-y-3">
+						<h3 class="text-xl font-light text-header-text tracking-wide">Producto 1</h3>
+						<p class="text-header-text/60 text-sm leading-relaxed">Descripción breve del producto.</p>
+						<p class="text-primary font-light text-lg">$29.99</p>
+					</div>
+				</div>
+
+				<div class="group cursor-pointer">
+					<div class="aspect-square overflow-hidden mb-8">
+						<img src="/placeholder.svg" alt="Producto 2" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" style="background-color: rgba(229, 230, 228, 0.7);" />
+					</div>
+					<div class="space-y-3">
+						<h3 class="text-xl font-light text-header-text tracking-wide">Producto 2</h3>
+						<p class="text-header-text/60 text-sm leading-relaxed">Descripción breve del producto.</p>
+						<p class="text-primary font-light text-lg">$39.99</p>
+					</div>
+				</div>
+
+				<div class="group cursor-pointer">
+					<div class="aspect-square overflow-hidden mb-8">
+						<img src="/placeholder.svg" alt="Producto 3" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" style="background-color: rgba(229, 230, 228, 0.7);" />
+					</div>
+					<div class="space-y-3">
+						<h3 class="text-xl font-light text-header-text tracking-wide">Producto 3</h3>
+						<p class="text-header-text/60 text-sm leading-relaxed">Descripción breve del producto.</p>
+						<p class="text-primary font-light text-lg">$19.99</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Newsletter -->
+	<section class="py-32 border-t border-header-text/10">
+		<div class="text-center space-y-8">
+			<h2 class="text-4xl md:text-5xl font-title font-light text-header-text tracking-tight">
+				Mantente actualizado
+			</h2>
+			<p class="text-xl font-light text-header-text/70 max-w-xl mx-auto leading-relaxed">
+				Recibe las últimas novedades y ofertas exclusivas
+			</p>
+			<div class="max-w-md mx-auto pt-8">
+				<div class="flex">
+					<input type="email" placeholder="Tu email" class="flex-1 px-6 py-4 bg-transparent border border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40" />
+					<button class="bg-primary text-primary-text px-8 py-4 font-light tracking-wider hover:bg-secondary transition-all duration-500 ease-out">
+						Suscribirse
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+</BaseLayout>

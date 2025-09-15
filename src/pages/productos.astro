@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductoCard from '../components/ProductoCard.astro';
+
+const title = 'Productos - Tienda Kilo Cero';
+
+// Datos mock de productos
+const productos = [
+	{
+		id: 1,
+		nombre: 'Producto 1',
+		descripcion: 'Descripción del producto 1',
+		precio: 100,
+		imagen: '/placeholder.svg'
+	},
+	{
+		id: 2,
+		nombre: 'Producto 2',
+		descripcion: 'Descripción del producto 2',
+		precio: 200,
+		imagen: '/placeholder.svg'
+	},
+	{
+		id: 3,
+		nombre: 'Producto 3',
+		descripcion: 'Descripción del producto 3',
+		precio: 150,
+		imagen: '/placeholder.svg'
+	}
+];
+---
+
+<BaseLayout title={title}>
+	<section class="py-32">
+		<div class="space-y-16">
+			<div class="text-center space-y-4">
+				<h1 class="text-4xl md:text-5xl font-title font-light text-header-text tracking-tight">
+					Nuestros Productos
+				</h1>
+				<p class="text-xl font-light text-header-text/70 max-w-2xl mx-auto leading-relaxed">
+					Descubre nuestra colección curada con atención al detalle
+				</p>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
+				{productos.map(producto => (
+					<ProductoCard producto={producto} />
+				))}
+			</div>
+		</div>
+	</section>
+</BaseLayout>
