@@ -100,9 +100,9 @@ const productos = [
 		container.innerHTML = favoriteProducts.map(producto => `
 			<article class="group cursor-pointer border border-header-text/10 hover:border-primary/20 transition-colors duration-300">
 				<div class="aspect-square overflow-hidden mb-8">
-					<img src="${producto.imagen}" alt="${producto.nombre}" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" style="background-color: rgba(229, 230, 228, 0.7);" />
+					<img src="${producto.imagen}" alt="${producto.nombre}" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 bg-primary" />
 				</div>
-				<div class="space-y-4">
+				<div class="space-y-4 p-4">
 					<div class="flex justify-between items-start">
 						<h3 class="text-xl font-light text-header-text tracking-wide group-hover:text-primary transition-colors duration-300">${producto.nombre}</h3>
 						<button id="fav-${producto.id}" class="text-header-text hover:text-primary transition-colors duration-300 opacity-0 group-hover:opacity-100" onclick="toggleFavorite(${producto.id})">
@@ -111,7 +111,7 @@ const productos = [
 					</div>
 					<p class="text-header-text/60 text-sm leading-relaxed">${producto.descripcion}</p>
 					<div class="flex justify-between items-center pt-4">
-						<span class="text-primary font-light text-lg">$${producto.precio}</span>
+						<span class="text-primary font-semibold text-xl">$${producto.precio}</span>
 						<button onclick="addToCart(${producto.id}, '${producto.nombre}', ${producto.precio}, '${producto.imagen}')" class="bg-primary text-primary-text px-6 py-3 font-light tracking-wider hover:bg-secondary transition-all duration-500 ease-out text-sm">
 							Agregar
 						</button>
