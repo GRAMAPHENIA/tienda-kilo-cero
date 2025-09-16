@@ -52,9 +52,29 @@ const title = 'Checkout - Tienda Kilo Cero';
 		</div>
 	</section>
 
-	<script src="https://sdk.mercadopago.com/js/v2"></script>
+	<script is:inline>
+		// Cargar MercadoPago SDK dinámicamente
+		(function() {
+			const script = document.createElement('script');
+			script.src = 'https://sdk.mercadopago.com/js/v2';
+			script.async = true;
+			script.onload = function() {
+				console.log('MercadoPago SDK cargado correctamente');
+				window.MercadoPagoLoaded = true;
+			};
+			script.onerror = function() {
+				console.error('Error al cargar MercadoPago SDK');
+			};
+			document.head.appendChild(script);
+		})();
+	</script>
 	<script>
 		declare const MercadoPago: any;
+		declare global {
+			interface Window {
+				MercadoPagoLoaded?: boolean;
+			}
+		}
 		import { CartService } from '../lib/cartService';
 
 		document.addEventListener('DOMContentLoaded', () => {
@@ -112,8 +132,8 @@ const title = 'Checkout - Tienda Kilo Cero';
 
 					// Función para verificar y inicializar MercadoPago
 					const initMercadoPago = () => {
-						if (typeof MercadoPago !== 'undefined') {
-							return new MercadoPago(import.meta.env.PUBLIC_MERCADOPAGO_PUBLIC_KEY);
+						if (typeof MercadoPago !== 'undefined' && window.MercadoPagoLoaded) {
+							return new MercadoPago(import.meta.env.PUBLIC_MERCADOPAGO_PUBLIC);
 						}
 						return null;
 					};
