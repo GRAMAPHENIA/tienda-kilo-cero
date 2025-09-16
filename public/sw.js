@@ -12,6 +12,11 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Manejo básico de fetch - por ahora, solo pasar la solicitud
-  event.respondWith(fetch(event.request));
+  // Manejo básico de fetch con manejo de errores
+  try {
+    event.respondWith(fetch(event.request));
+  } catch (error) {
+    console.log('Service Worker: Error en fetch, pasando sin interceptar');
+    // Si hay error, no interceptar la solicitud
+  }
 });

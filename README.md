@@ -1,43 +1,56 @@
-# Astro Starter Kit: Minimal
+# 🛒 Tienda Kilo Cero
 
-```sh
-npm create astro@latest -- --template minimal
+Tienda en línea con integración completa de MercadoPago.
+
+## 🚀 Despliegue en Vercel
+
+### 1. Variables de Entorno
+Configura estas variables en Vercel (Settings → Environment Variables):
+
+```
+PUBLIC_MERCADOPAGO_PUBLIC=APP_USR-tu-public-key-de-produccion
+MERCADOPAGO_ACCESS_TOKEN=APP_USR-tu-access-token-de-produccion
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+### 2. Build Settings
+Vercel detectará automáticamente:
+- **Framework**: Astro
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
 
-## 🚀 Project Structure
+### 3. URLs de Redirección
+Las URLs de éxito/error se configuran automáticamente basadas en tu dominio de Vercel.
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🧪 Testing
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+### Desarrollo Local
+```bash
+npm run dev
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Producción
+1. Despliega a Vercel
+2. Configura variables de entorno
+3. Prueba el flujo de pago completo
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## 📋 Flujo de Pago
 
-Any static assets, like images, can be placed in the `public/` directory.
+1. Usuario agrega productos al carrito
+2. Completa formulario de checkout
+3. API crea preferencia de MercadoPago
+4. Redirect a checkout de MercadoPago
+5. Usuario paga
+6. Redirect de vuelta a página de éxito/error
 
-## 🧞 Commands
+## 🔧 Tecnologías
 
-All commands are run from the root of the project, from a terminal:
+- **Frontend**: Astro + JavaScript
+- **Styling**: Tailwind CSS
+- **Pagos**: MercadoPago API
+- **Despliegue**: Vercel
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## 📝 Notas
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- Service Worker activado para PWA
+- API routes configuradas para server-side rendering
+- Variables de entorno seguras (no expuestas al cliente)

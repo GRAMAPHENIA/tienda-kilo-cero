@@ -52,22 +52,6 @@ const title = 'Checkout - Tienda Kilo Cero';
 		</div>
 	</section>
 
-	<script is:inline>
-		// Cargar MercadoPago SDK dinámicamente
-		(function() {
-			const script = document.createElement('script');
-			script.src = 'https://sdk.mercadopago.com/js/v2';
-			script.async = true;
-			script.onload = function() {
-				console.log('MercadoPago SDK cargado correctamente');
-				window.MercadoPagoLoaded = true;
-			};
-			script.onerror = function() {
-				console.error('Error al cargar MercadoPago SDK');
-			};
-			document.head.appendChild(script);
-		})();
-	</script>
 	<script>
 		declare const MercadoPago: any;
 		declare global {
@@ -130,14 +114,6 @@ const title = 'Checkout - Tienda Kilo Cero';
 						return;
 					}
 
-					// Función para verificar y inicializar MercadoPago
-					const initMercadoPago = () => {
-						if (typeof MercadoPago !== 'undefined' && window.MercadoPagoLoaded) {
-							return new MercadoPago(import.meta.env.PUBLIC_MERCADOPAGO_PUBLIC);
-						}
-						return null;
-					};
-
 					// Obtener datos del formulario
 					const formData = new FormData(form);
 					const customerInfo = {
@@ -155,83 +131,50 @@ const title = 'Checkout - Tienda Kilo Cero';
 						unit_price: item.precio
 					}));
 
-					// Función para procesar el pago
-					const processPayment = async () => {
-						try {
-							console.log('Iniciando proceso de pago...');
-							console.log('Items:', items);
-							console.log('Customer Info:', customerInfo);
+					try {
+						console.log('Iniciando proceso de pago...');
+						console.log('Items:', items);
+						console.log('Customer Info:', customerInfo);
 
-							// Enviar datos al backend para crear la preference
-							const response = await fetch('/api/create-preference', {
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json',
-								},
-								body: JSON.stringify({
-									items,
-									customerInfo
-								}),
-							});
+						// Enviar datos al backend para crear la preference
+						const response = await fetch('/api/create-preference', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify({
+								items,
+								customerInfo
+							}),
+						});
 
-							console.log('Respuesta del API:', response.status, response.statusText);
+						console.log('Respuesta del API:', response.status, response.statusText);
 
-							if (!response.ok) {
-								const errorText = await response.text();
-								console.error('Error del API:', errorText);
-								throw new Error(`Error al crear la preferencia: ${response.status} ${response.statusText}`);
-							}
-
-							const data = await response.json();
-							console.log('Datos del API:', data);
-
-							if (!data.preferenceId) {
-								throw new Error('No se recibió preferenceId del servidor');
-							}
-
-							const { preferenceId } = data;
-
-							// Inicializar MercadoPago
-							const mp = initMercadoPago();
-							if (!mp) {
-								throw new Error('SDK de MercadoPago no disponible');
-							}
-
-							console.log('MercadoPago inicializado, preferenceId:', preferenceId);
-
-							// Redirigir al checkout de MercadoPago
-							mp.checkout({
-								preference: {
-									id: preferenceId
-								},
-								render: {
-									container: '', // Modal
-									label: 'Pagar'
-								}
-							});
-						} catch (error) {
-							console.error('Error al procesar el pago:', error);
-							const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-							alert(`Error al procesar el pago: ${errorMessage}`);
+						if (!response.ok) {
+							const errorText = await response.text();
+							console.error('Error del API:', errorText);
+							throw new Error(`Error al crear la preferencia: ${response.status} ${response.statusText}`);
 						}
-					};
 
-					// Intentar procesar el pago inmediatamente
-					let mp = initMercadoPago();
-					if (mp) {
-						processPayment();
-					} else {
-						// Si no está disponible, esperar y reintentar
-						console.warn('MercadoPago SDK no disponible, esperando...');
-						setTimeout(() => {
-							mp = initMercadoPago();
-							if (mp) {
-								processPayment();
-							} else {
-								console.error('MercadoPago SDK no se pudo cargar');
-								alert('Error: SDK de MercadoPago no disponible. Verifica tu conexión.');
-							}
-						}, 3000);
+						const data = await response.json();
+						console.log('Datos del API:', data);
+
+						if (!data.preferenceId) {
+							throw new Error('No se recibió preferenceId del servidor');
+						}
+
+						const { preferenceId } = data;
+						console.log('PreferenceId recibido:', preferenceId);
+
+						// Redirigir al checkout de MercadoPago usando URL directa
+						const checkoutUrl = `https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=${preferenceId}`;
+						console.log('Redirigiendo a:', checkoutUrl);
+						window.location.href = checkoutUrl;
+
+					} catch (error) {
+						console.error('Error al procesar el pago:', error);
+						const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+						alert(`Error al procesar el pago: ${errorMessage}`);
 					}
 				});
 			}

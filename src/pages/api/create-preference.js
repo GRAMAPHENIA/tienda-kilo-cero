@@ -1,7 +1,8 @@
-import type { APIRoute } from 'astro';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 
-export const POST: APIRoute = async ({ request }) => {
+export const prerender = false;
+
+export const POST = async ({ request }) => {
   try {
     console.log('API create-preference called');
     const { items, customerInfo } = await request.json();
@@ -10,6 +11,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     const accessToken = import.meta.env.MERCADOPAGO_ACCESS_TOKEN;
     console.log('Access token available:', !!accessToken);
+    console.log('Access token value:', accessToken ? 'Present' : 'Missing');
 
     if (!accessToken) {
       throw new Error('MERCADOPAGO_ACCESS_TOKEN no está configurado');
@@ -21,7 +23,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     // Crear items para la preferencia
-    const preferenceItems = items.map((item: any) => ({
+    const preferenceItems = items.map((item) => ({
       title: item.title,
       quantity: item.quantity,
       unit_price: item.unit_price,
@@ -42,7 +44,6 @@ export const POST: APIRoute = async ({ request }) => {
           failure: `${new URL(request.url).origin}/failure`,
           pending: `${new URL(request.url).origin}/pending`,
         },
-        auto_return: 'approved',
         external_reference: `order_${Date.now()}`,
       },
     });
