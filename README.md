@@ -16,7 +16,8 @@ MERCADOPAGO_ACCESS_TOKEN=APP_USR-tu-access-token-de-produccion
 Vercel detectará automáticamente:
 - **Framework**: Astro
 - **Build Command**: `npm run build`
-- **Output Directory**: `dist`
+- **Output Directory**: `.vercel/output`
+- **Adapter**: Vercel (configurado en `astro.config.mjs`)
 
 ### 3. URLs de Redirección
 Las URLs de éxito/error se configuran automáticamente basadas en tu dominio de Vercel.
