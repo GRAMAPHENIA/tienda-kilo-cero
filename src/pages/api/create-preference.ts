@@ -3,11 +3,21 @@ import { MercadoPagoConfig, Preference } from 'mercadopago';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    console.log('API create-preference called');
     const { items, customerInfo } = await request.json();
+    console.log('Received items:', items);
+    console.log('Received customerInfo:', customerInfo);
+
+    const accessToken = import.meta.env.MERCADOPAGO_ACCESS_TOKEN;
+    console.log('Access token available:', !!accessToken);
+
+    if (!accessToken) {
+      throw new Error('MERCADOPAGO_ACCESS_TOKEN no está configurado');
+    }
 
     // Configurar MercadoPago
     const client = new MercadoPagoConfig({
-      accessToken: import.meta.env.MERCADOPAGO_ACCESS_TOKEN,
+      accessToken: accessToken,
     });
 
     // Crear items para la preferencia

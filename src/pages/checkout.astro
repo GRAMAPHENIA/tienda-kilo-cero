@@ -158,6 +158,10 @@ const title = 'Checkout - Tienda Kilo Cero';
 					// Función para procesar el pago
 					const processPayment = async () => {
 						try {
+							console.log('Iniciando proceso de pago...');
+							console.log('Items:', items);
+							console.log('Customer Info:', customerInfo);
+
 							// Enviar datos al backend para crear la preference
 							const response = await fetch('/api/create-preference', {
 								method: 'POST',
@@ -170,17 +174,30 @@ const title = 'Checkout - Tienda Kilo Cero';
 								}),
 							});
 
+							console.log('Respuesta del API:', response.status, response.statusText);
+
 							if (!response.ok) {
-								throw new Error('Error al crear la preferencia');
+								const errorText = await response.text();
+								console.error('Error del API:', errorText);
+								throw new Error(`Error al crear la preferencia: ${response.status} ${response.statusText}`);
 							}
 
-							const { preferenceId } = await response.json();
+							const data = await response.json();
+							console.log('Datos del API:', data);
+
+							if (!data.preferenceId) {
+								throw new Error('No se recibió preferenceId del servidor');
+							}
+
+							const { preferenceId } = data;
 
 							// Inicializar MercadoPago
 							const mp = initMercadoPago();
 							if (!mp) {
 								throw new Error('SDK de MercadoPago no disponible');
 							}
+
+							console.log('MercadoPago inicializado, preferenceId:', preferenceId);
 
 							// Redirigir al checkout de MercadoPago
 							mp.checkout({
@@ -194,7 +211,8 @@ const title = 'Checkout - Tienda Kilo Cero';
 							});
 						} catch (error) {
 							console.error('Error al procesar el pago:', error);
-							alert('Error al procesar el pago. Intente nuevamente.');
+							const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+							alert(`Error al procesar el pago: ${errorMessage}`);
 						}
 					};
 
