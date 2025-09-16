@@ -36,9 +36,9 @@ function updateFavoriteIcon(id) {
 		const svg = button.querySelector('svg');
 		const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
 		if (favorites.includes(id)) {
-			svg?.classList.add('fill-current', 'text-secondary');
+			svg?.classList.add('fill-current', 'text-[#EC0B43]');
 		} else {
-			svg?.classList.remove('fill-current', 'text-secondary');
+			svg?.classList.remove('fill-current', 'text-[#EC0B43]');
 		}
 	}
 }
