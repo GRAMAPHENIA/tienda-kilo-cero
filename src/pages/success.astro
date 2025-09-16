@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Pago Exitoso - Tienda Kilo Cero';
+---
+
+<BaseLayout title={title}>
+	<section class="py-24">
+		<div class="max-w-2xl mx-auto text-center space-y-8">
+			<div class="space-y-4">
+				<div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+					<svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+					</svg>
+				</div>
+				<h1 class="text-4xl md:text-5xl font-title font-light text-header-text tracking-tight">
+					¡Pago Exitoso!
+				</h1>
+				<p class="text-xl font-light text-header-text/70 max-w-lg mx-auto leading-relaxed">
+					Gracias por tu compra. Hemos recibido tu pago correctamente.
+				</p>
+			</div>
+
+			<div class="space-y-4">
+				<p class="text-lg text-header-text/80">
+					Recibirás un email de confirmación con los detalles de tu pedido.
+				</p>
+				<div class="flex flex-col sm:flex-row gap-4 justify-center">
+					<a href="/" class="bg-primary text-primary-text py-3 px-8 font-light tracking-wider hover:bg-secondary transition-all duration-500 ease-out text-lg">
+						Volver al Inicio
+					</a>
+					<a href="/productos" class="border border-primary text-primary py-3 px-8 font-light tracking-wider hover:bg-primary hover:text-primary-text transition-all duration-500 ease-out text-lg">
+						Seguir Comprando
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</BaseLayout>

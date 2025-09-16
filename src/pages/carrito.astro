@@ -93,15 +93,15 @@ const title = 'Carrito - Tienda Kilo Cero';
 				if (!productIdStr) return;
 				const productId = parseInt(productIdStr);
 
-				if (target.classList.contains('increase-qty')) {
+				if (target.textContent === '+') {
 					const cart = CartService.getCart();
 					const item = cart.find(i => i.id === productId);
 					if (item) CartService.updateQuantity(productId, item.cantidad + 1);
-				} else if (target.classList.contains('decrease-qty')) {
+				} else if (target.textContent === '-') {
 					const cart = CartService.getCart();
 					const item = cart.find(i => i.id === productId);
 					if (item) CartService.updateQuantity(productId, item.cantidad - 1);
-				} else if (target.classList.contains('remove-item')) {
+				} else if (target.textContent === 'Eliminar') {
 					CartService.removeFromCart(productId);
 				}
 

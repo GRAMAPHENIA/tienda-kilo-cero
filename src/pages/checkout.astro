@@ -91,6 +91,9 @@ const title = 'Checkout - Tienda Kilo Cero';
 
 			renderOrderSummary();
 
+			// Escuchar cambios en el carrito
+			window.addEventListener('cartUpdated', renderOrderSummary);
+
 			// Evento para el botón de pago
 			if (payButton) {
 				payButton.addEventListener('click', async (e) => {
@@ -107,15 +110,21 @@ const title = 'Checkout - Tienda Kilo Cero';
 						return;
 					}
 
-					// Verificar si MercadoPago está disponible
-					if (typeof MercadoPago === 'undefined') {
-						console.error('MercadoPago SDK no cargado');
-						alert('Error: SDK de MercadoPago no disponible');
-						return;
-					}
+					// Función para verificar y inicializar MercadoPago
+					const initMercadoPago = () => {
+						if (typeof MercadoPago !== 'undefined') {
+							return new MercadoPago(import.meta.env.PUBLIC_MERCADOPAGO_PUBLIC_KEY);
+						}
+						return null;
+					};
 
-					// Inicializar MercadoPago
-					const mp = new MercadoPago('TEST-1234567890123456'); // Public key de test
+					// Obtener datos del formulario
+					const formData = new FormData(form);
+					const customerInfo = {
+						name: formData.get('name'),
+						email: formData.get('email'),
+						address: formData.get('address')
+					};
 
 					const cart = CartService.getCart();
 
@@ -126,35 +135,65 @@ const title = 'Checkout - Tienda Kilo Cero';
 						unit_price: item.precio
 					}));
 
-					// Simular creación de preference (en producción, esto se hace en el backend)
-					const preference = {
-						items: items,
-						back_urls: {
-							success: window.location.origin + '/success',
-							failure: window.location.origin + '/failure',
-							pending: window.location.origin + '/pending'
-						},
-						auto_return: 'approved'
+					// Función para procesar el pago
+					const processPayment = async () => {
+						try {
+							// Enviar datos al backend para crear la preference
+							const response = await fetch('/api/create-preference', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify({
+									items,
+									customerInfo
+								}),
+							});
+
+							if (!response.ok) {
+								throw new Error('Error al crear la preferencia');
+							}
+
+							const { preferenceId } = await response.json();
+
+							// Inicializar MercadoPago
+							const mp = initMercadoPago();
+							if (!mp) {
+								throw new Error('SDK de MercadoPago no disponible');
+							}
+
+							// Redirigir al checkout de MercadoPago
+							mp.checkout({
+								preference: {
+									id: preferenceId
+								},
+								render: {
+									container: '', // Modal
+									label: 'Pagar'
+								}
+							});
+						} catch (error) {
+							console.error('Error al procesar el pago:', error);
+							alert('Error al procesar el pago. Intente nuevamente.');
+						}
 					};
 
-					try {
-						// En producción, enviar preference al backend para crear la preference ID
-						// Aquí simulamos una preference ID
-						const preferenceId = '123456789'; // Simulado
-
-						// Redirigir al checkout de MercadoPago
-						mp.checkout({
-							preference: {
-								id: preferenceId
-							},
-							render: {
-								container: '', // Modal
-								label: 'Pagar'
+					// Intentar procesar el pago inmediatamente
+					let mp = initMercadoPago();
+					if (mp) {
+						processPayment();
+					} else {
+						// Si no está disponible, esperar y reintentar
+						console.warn('MercadoPago SDK no disponible, esperando...');
+						setTimeout(() => {
+							mp = initMercadoPago();
+							if (mp) {
+								processPayment();
+							} else {
+								console.error('MercadoPago SDK no se pudo cargar');
+								alert('Error: SDK de MercadoPago no disponible. Verifica tu conexión.');
 							}
-						});
-					} catch (error) {
-						console.error('Error al procesar el pago:', error);
-						alert('Error al procesar el pago. Intente nuevamente.');
+						}, 3000);
 					}
 				});
 			}
