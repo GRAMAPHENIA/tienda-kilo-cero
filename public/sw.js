@@ -11,12 +11,18 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
+// Service Worker básico para PWA - sin interferir con navegación
 self.addEventListener('fetch', event => {
-  // Manejo básico de fetch con manejo de errores
-  try {
+  // No interceptar navegaciones para evitar problemas de cache
+  if (event.request.mode === 'navigate') {
+    return; // Dejar que el navegador maneje las navegaciones normalmente
+  }
+
+  // Solo interceptar requests de recursos estáticos
+  if (event.request.url.includes('/icons/') ||
+      event.request.url.includes('/favicon') ||
+      event.request.url.includes('.css') ||
+      event.request.url.includes('.js')) {
     event.respondWith(fetch(event.request));
-  } catch (error) {
-    console.log('Service Worker: Error en fetch, pasando sin interceptar');
-    // Si hay error, no interceptar la solicitud
   }
 });

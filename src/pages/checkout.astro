@@ -1,183 +1,244 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
 
-const title = 'Checkout - Tienda Kilo Cero';
+const title = "Checkout - Tienda Kilo Cero";
 ---
 
 <BaseLayout title={title}>
-	<section class="py-24">
-		<div class="space-y-16">
-			<div class="text-center space-y-4">
-				<h1 class="text-4xl md:text-5xl font-title font-light text-header-text tracking-tight">
-					Finalizar Compra
-				</h1>
-				<p class="text-xl font-light text-header-text/70 max-w-2xl mx-auto leading-relaxed">
-					Completa tu información para procesar el pedido
-				</p>
-			</div>
+  <section class="py-24">
+    <div class="space-y-16">
+      <div class="text-center space-y-4">
+        <h1
+          class="text-4xl md:text-5xl font-title font-light text-header-text tracking-tight"
+        >
+          Finalizar Compra
+        </h1>
+        <p
+          class="text-xl font-light text-header-text/70 max-w-2xl mx-auto leading-relaxed"
+        >
+          Completa tu información para procesar el pedido
+        </p>
+      </div>
 
-			<div class="max-w-2xl mx-auto space-y-12">
-				<form id="checkout-form" class="space-y-8">
-					<div class="space-y-6">
-						<label for="name" class="block text-lg font-light text-header-text tracking-wide">Nombre Completo</label>
-						<input type="text" id="name" name="name" required class="w-full px-6 py-4 bg-transparent border-b border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40" />
-					</div>
-					<div class="space-y-6">
-						<label for="email" class="block text-lg font-light text-header-text tracking-wide">Correo Electrónico</label>
-						<input type="email" id="email" name="email" required class="w-full px-6 py-4 bg-transparent border-b border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40" />
-					</div>
-					<div class="space-y-6">
-						<label for="address" class="block text-lg font-light text-header-text tracking-wide">Dirección de Envío</label>
-						<textarea id="address" name="address" required class="w-full px-6 py-4 bg-transparent border-b border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40 resize-none" rows="4"></textarea>
-					</div>
-				</form>
+      <div class="max-w-2xl mx-auto space-y-12">
+        <form id="checkout-form" class="space-y-8">
+          <div class="space-y-6">
+            <label
+              for="name"
+              class="block text-lg font-light text-header-text tracking-wide"
+              >Nombre Completo</label
+            >
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class="w-full px-6 py-4 bg-transparent border-b border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40"
+            />
+          </div>
+          <div class="space-y-6">
+            <label
+              for="email"
+              class="block text-lg font-light text-header-text tracking-wide"
+              >Correo Electrónico</label
+            >
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="w-full px-6 py-4 bg-transparent border-b border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40"
+            />
+          </div>
+          <div class="space-y-6">
+            <label
+              for="address"
+              class="block text-lg font-light text-header-text tracking-wide"
+              >Dirección de Envío</label
+            >
+            <textarea
+              id="address"
+              name="address"
+              required
+              class="w-full px-6 py-4 bg-transparent border-b border-header-text/20 focus:border-primary focus:outline-none transition-colors duration-300 text-header-text placeholder-header-text/40 resize-none"
+              rows="4"></textarea>
+          </div>
+        </form>
 
-				<div class="border-t border-header-text/10 pt-8 space-y-6">
-					<h3 class="text-2xl font-light text-header-text tracking-wide">Resumen del Pedido</h3>
-					<div id="order-summary" class="space-y-4">
-						<!-- Resumen se cargará dinámicamente -->
-					</div>
-					<div class="flex justify-between items-center pt-6 border-t border-header-text/10">
-						<span class="text-xl font-light text-header-text tracking-wide">Total</span>
-						<span class="text-3xl font-light text-primary">$<span id="checkout-total">0</span></span>
-					</div>
-				</div>
+        <div class="border-t border-header-text/10 pt-8 space-y-6">
+          <h3 class="text-2xl font-light text-header-text tracking-wide">
+            Resumen del Pedido
+          </h3>
+          <div id="order-summary" class="space-y-4">
+            <!-- Resumen se cargará dinámicamente -->
+          </div>
+          <div
+            class="flex justify-between items-center pt-6 border-t border-header-text/10"
+          >
+            <span class="text-xl font-light text-header-text tracking-wide"
+              >Total</span
+            >
+            <span class="text-3xl font-light text-primary"
+              >$<span id="checkout-total">0</span></span
+            >
+          </div>
+        </div>
 
-				<div class="pt-8">
-					<button id="pay-button" class="w-full bg-primary text-primary-text py-4 font-light tracking-wider hover:bg-secondary transition-all duration-500 ease-out text-lg">
-						Pagar con MercadoPago
-					</button>
-				</div>
-			</div>
-		</div>
-	</section>
+        <div class="pt-8">
+          <button
+            id="pay-button"
+            class="w-full bg-primary text-primary-text py-4 font-light tracking-wider hover:bg-secondary transition-all duration-500 ease-out text-lg"
+          >
+            Pagar con MercadoPago
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-	<script>
-		declare const MercadoPago: any;
-		declare global {
-			interface Window {
-				MercadoPagoLoaded?: boolean;
-			}
-		}
-		import { CartService } from '../lib/cartService';
+  <script>
+    declare const MercadoPago: any;
+    declare global {
+      interface Window {
+        MercadoPagoLoaded?: boolean;
+      }
+    }
+    import { CartService } from "../lib/cartService";
 
-		document.addEventListener('DOMContentLoaded', () => {
-			const orderSummary = document.getElementById('order-summary') as HTMLElement | null;
-			const checkoutTotal = document.getElementById('checkout-total') as HTMLElement | null;
-			const payButton = document.getElementById('pay-button') as HTMLButtonElement | null;
+    document.addEventListener("DOMContentLoaded", () => {
+      const orderSummary = document.getElementById(
+        "order-summary"
+      ) as HTMLElement | null;
+      const checkoutTotal = document.getElementById(
+        "checkout-total"
+      ) as HTMLElement | null;
+      const payButton = document.getElementById(
+        "pay-button"
+      ) as HTMLButtonElement | null;
 
-			function renderOrderSummary() {
-				const cart = CartService.getCart();
-				const total = CartService.getTotal();
+      function renderOrderSummary() {
+        const cart = CartService.getCart();
+        const total = CartService.getTotal();
 
-				if (!orderSummary || !payButton) {
-					console.error('Elementos del DOM no encontrados');
-					return;
-				}
+        if (!orderSummary || !payButton) {
+          console.error("Elementos del DOM no encontrados");
+          return;
+        }
 
-				if (cart.length === 0) {
-					orderSummary.innerHTML = '<p>No hay productos en el carrito</p>';
-					payButton.disabled = true;
-				} else {
-					orderSummary.innerHTML = cart.map(item => `
+        if (cart.length === 0) {
+          orderSummary.innerHTML = "<p>No hay productos en el carrito</p>";
+          payButton.disabled = true;
+        } else {
+          orderSummary.innerHTML = cart
+            .map(
+              (item) => `
 						<div class="flex justify-between">
 							<span>${item.nombre} x${item.cantidad}</span>
 							<span>$${(item.precio * item.cantidad).toFixed(2)}</span>
 						</div>
-					`).join('');
-					payButton.disabled = false;
-				}
+					`
+            )
+            .join("");
+          payButton.disabled = false;
+        }
 
-				if (checkoutTotal) {
-					checkoutTotal.textContent = total.toFixed(2);
-				}
-			}
+        if (checkoutTotal) {
+          checkoutTotal.textContent = total.toFixed(2);
+        }
+      }
 
-			renderOrderSummary();
+      renderOrderSummary();
 
-			// Escuchar cambios en el carrito
-			window.addEventListener('cartUpdated', renderOrderSummary);
+      // Escuchar cambios en el carrito
+      window.addEventListener("cartUpdated", renderOrderSummary);
 
-			// Evento para el botón de pago
-			if (payButton) {
-				payButton.addEventListener('click', async (e) => {
-					e.preventDefault();
+      // Evento para el botón de pago
+      if (payButton) {
+        payButton.addEventListener("click", async (e) => {
+          e.preventDefault();
 
-					const form = document.getElementById('checkout-form') as HTMLFormElement | null;
-					if (!form) {
-						console.error('Formulario no encontrado');
-						return;
-					}
+          const form = document.getElementById(
+            "checkout-form"
+          ) as HTMLFormElement | null;
+          if (!form) {
+            console.error("Formulario no encontrado");
+            return;
+          }
 
-					if (!form.checkValidity()) {
-						form.reportValidity();
-						return;
-					}
+          if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+          }
 
-					// Obtener datos del formulario
-					const formData = new FormData(form);
-					const customerInfo = {
-						name: formData.get('name'),
-						email: formData.get('email'),
-						address: formData.get('address')
-					};
+          // Obtener datos del formulario
+          const formData = new FormData(form);
+          const customerInfo = {
+            name: formData.get("name"),
+            email: formData.get("email"),
+            address: formData.get("address"),
+          };
 
-					const cart = CartService.getCart();
+          const cart = CartService.getCart();
 
-					// Crear items para MercadoPago
-					const items = cart.map(item => ({
-						title: item.nombre,
-						quantity: item.cantidad,
-						unit_price: item.precio
-					}));
+          // Crear items para MercadoPago
+          const items = cart.map((item) => ({
+            title: item.nombre,
+            quantity: item.cantidad,
+            unit_price: item.precio,
+          }));
 
-					try {
-						console.log('Iniciando proceso de pago...');
-						console.log('Items:', items);
-						console.log('Customer Info:', customerInfo);
+          try {
+            console.log("Iniciando proceso de pago...");
+            console.log("Items:", items);
+            console.log("Customer Info:", customerInfo);
 
-						// Enviar datos al backend para crear la preference
-						const response = await fetch('/api/create-preference', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({
-								items,
-								customerInfo
-							}),
-						});
+            // Enviar datos al backend para crear la preference
+            const response = await fetch("/api/create-preference", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                items,
+                customerInfo,
+              }),
+            });
 
-						console.log('Respuesta del API:', response.status, response.statusText);
+            console.log(
+              "Respuesta del API:",
+              response.status,
+              response.statusText
+            );
 
-						if (!response.ok) {
-							const errorText = await response.text();
-							console.error('Error del API:', errorText);
-							throw new Error(`Error al crear la preferencia: ${response.status} ${response.statusText}`);
-						}
+            if (!response.ok) {
+              const errorText = await response.text();
+              console.error("Error del API:", errorText);
+              throw new Error(
+                `Error al crear la preferencia: ${response.status} ${response.statusText}`
+              );
+            }
 
-						const data = await response.json();
-						console.log('Datos del API:', data);
+            const data = await response.json();
+            console.log("Datos del API:", data);
 
-						if (!data.preferenceId) {
-							throw new Error('No se recibió preferenceId del servidor');
-						}
+            if (!data.preferenceId) {
+              throw new Error("No se recibió preferenceId del servidor");
+            }
 
-						const { preferenceId } = data;
-						console.log('PreferenceId recibido:', preferenceId);
+            const { preferenceId } = data;
+            console.log("PreferenceId recibido:", preferenceId);
 
-						// Redirigir al checkout de MercadoPago usando URL directa
-						const checkoutUrl = `https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=${preferenceId}`;
-						console.log('Redirigiendo a:', checkoutUrl);
-						window.location.href = checkoutUrl;
-
-					} catch (error) {
-						console.error('Error al procesar el pago:', error);
-						const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-						alert(`Error al procesar el pago: ${errorMessage}`);
-					}
-				});
-			}
-		});
-	</script>
+            // Redirigir al checkout de MercadoPago usando URL directa
+            const checkoutUrl = `https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=${preferenceId}`;
+            console.log("Redirigiendo a:", checkoutUrl);
+            window.location.href = checkoutUrl;
+          } catch (error) {
+            console.error("Error al procesar el pago:", error);
+            const errorMessage =
+              error instanceof Error ? error.message : "Error desconocido";
+          }
+        });
+      }
+    });
+  </script>
 </BaseLayout>

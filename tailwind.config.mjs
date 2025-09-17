@@ -4,22 +4,22 @@ export default {
   theme: {
     extend: {
       colors: {
-        'background': '#E5E6E4', // Fondo principal
-        'cards': '#FBFBF2', // Fondo de tarjetas
-        'header-bg': '#CFD2CD', // Fondo del header
-        'header-text': '#5A4A4D', // Texto del header (847577 más oscuro)
-        'footer-bg': '#A6A2A2', // Fondo del footer
-        'footer-text': '#5A4A4D', // Texto del footer (847577 más oscuro)
-        'primary': '#A6A2A2', // Botón primary
-        'primary-text': '#2D2D2D', // Texto para botón primary (contraste alto)
-        'secondary': '#CFD2CD', // Botón secondary
-        'secondary-text': '#2D2D2D', // Texto para botón secondary (contraste alto)
-        'neutral': '#f9fafb', // Gris muy claro para fondo
-        'text-primary': '#111827', // Gris muy oscuro para texto
-        'text-secondary': '#6b7280', // Gris medio para texto secundario
-        'success': '#10b981', // Verde para éxito
-        'warning': '#f59e0b', // Amarillo para warning
-        'error': '#ef4444', // Rojo para error
+        'background': '#E5E6E4',
+        'cards': '#FBFBF2',
+        'header-bg': '#CFD2CD',
+        'header-text': '#5A4A4D',
+        'footer-bg': '#A6A2A2',
+        'footer-text': '#5A4A4D',
+        'primary': '#A6A2A2',
+        'primary-text': '#2D2D2D',
+        'secondary': '#CFD2CD',
+        'secondary-text': '#2D2D2D',
+        'neutral': '#f9fafb',
+        'text-primary': '#111827',
+        'text-secondary': '#6b7280',
+        'success': '#10b981',
+        'warning': '#f59e0b',
+        'error': '#ef4444',
       },
       fontFamily: {
         'title': ['Inter', 'sans-serif'],
@@ -28,4 +28,17 @@ export default {
     },
   },
   plugins: [],
+  // Optimizaciones de rendimiento
+  corePlugins: {
+    // Deshabilitar plugins no utilizados para reducir el bundle
+    preflight: true,
+  },
+  // Optimizar el purging
+  safelist: [
+    // Clases que podrían no detectarse automáticamente
+    'aspect-square',
+    'object-cover',
+    'transition-transform',
+    'group-hover:scale-105',
+  ],
 }

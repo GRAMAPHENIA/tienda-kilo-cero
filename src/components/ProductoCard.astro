@@ -14,7 +14,18 @@ const { producto } = Astro.props;
 
 <article class="group cursor-pointer border border-header-text/10 hover:border-primary/20 transition-colors duration-300">
 	<div class="aspect-square overflow-hidden mb-8">
-		<img src={producto.imagen} alt={producto.nombre} class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 bg-primary" />
+		<picture>
+			<source srcset={producto.imagen.replace('.svg', '.webp')} type="image/webp" />
+			<img
+				src={producto.imagen}
+				alt={producto.nombre}
+				width="400"
+				height="400"
+				loading="lazy"
+				decoding="async"
+				class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 bg-primary"
+			/>
+		</picture>
 	</div>
 	<div class="space-y-4 p-4">
 		<div class="flex justify-between items-start">

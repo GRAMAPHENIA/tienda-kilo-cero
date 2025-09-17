@@ -1,0 +1,266 @@
+<!-- ToastContainer: bottom-right, max 2 visible, 3000ms duration, sin botón de acción -->
+<div
+  id="toast-container"
+  class="fixed bottom-4 right-4 z-50 space-y-2 pointer-events-none"
+  aria-live="polite"
+  role="region"
+  aria-atomic="true"
+  aria-label="Notificaciones"
+></div>
+
+<script>
+// @ts-nocheck
+(function () {
+  const MAX_VISIBLE = 2;
+  const DEFAULT_DURATION = 3000;
+  const containerId = 'toast-container';
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function getContainer() {
+    let el = document.getElementById(containerId);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = containerId;
+      el.className = 'fixed bottom-4 right-4 z-50 space-y-2 pointer-events-none';
+      el.setAttribute('aria-live', 'polite');
+      el.setAttribute('role', 'region');
+      el.setAttribute('aria-atomic', 'true');
+      el.setAttribute('aria-label', 'Notificaciones');
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+
+  const toasts = new Map(); // id -> { el, timer }
+  const visible = []; // ids visibles
+  const queue = []; // pendientes: { id, message, type, duration }
+
+  function getTypeClasses(type) {
+    switch (type) {
+      case 'success':
+        return 'border-green-500';
+      case 'error':
+        return 'border-red-500';
+      case 'warning':
+        return 'border-yellow-500';
+      default:
+        return 'border-blue-500';
+    }
+  }
+
+  function getIconSvg(type) {
+    const icons = {
+      success:
+        '<svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>',
+      error:
+        '<svg class="h-5 w-5 text-red-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>',
+      warning:
+        '<svg class="h-5 w-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>',
+      info:
+        '<svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>',
+    };
+    return icons[type] || icons.info;
+  }
+
+  function createToastElement(id, message, type) {
+    const el = document.createElement('div');
+    el.id = id;
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-atomic', 'true');
+    el.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+    el.className = [
+      'max-w-sm w-full bg-white shadow-lg rounded-lg border-l-4 pointer-events-auto',
+      'transform transition-all ease-out',
+      prefersReducedMotion ? 'duration-0' : 'duration-300',
+      prefersReducedMotion ? '' : 'translate-x-4',
+      'opacity-0',
+      getTypeClasses(type),
+    ].join(' ');
+
+    const inner = document.createElement('div');
+    inner.className = 'flex items-center p-4';
+
+    const iconWrap = document.createElement('div');
+    iconWrap.className = 'flex-shrink-0';
+    iconWrap.innerHTML = getIconSvg(type);
+
+    const content = document.createElement('div');
+    content.className = 'ml-3 flex-1';
+
+    const p = document.createElement('p');
+    p.className = 'text-sm font-medium text-gray-800';
+    p.textContent = message;
+    content.appendChild(p);
+
+    const closeWrap = document.createElement('div');
+    closeWrap.className = 'ml-4 flex-shrink-0';
+
+    const btn = document.createElement('button');
+    btn.setAttribute('aria-label', 'Cerrar notificación');
+    btn.title = 'Cerrar';
+    btn.className = 'inline-flex text-gray-400 hover:text-gray-600 focus:outline-none';
+    btn.innerHTML =
+      '<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>';
+    btn.addEventListener('click', function () {
+      remove(id);
+    });
+    closeWrap.appendChild(btn);
+
+    inner.appendChild(iconWrap);
+    inner.appendChild(content);
+    inner.appendChild(closeWrap);
+    el.appendChild(inner);
+
+    // Pausar/reanudar al hover
+    el.addEventListener('mouseenter', function () {
+      pauseTimer(id);
+    });
+    el.addEventListener('mouseleave', function () {
+      resumeTimer(id);
+    });
+    // Accesibilidad con teclado
+    el.tabIndex = 0;
+    el.addEventListener('focusin', function () {
+      pauseTimer(id);
+    });
+    el.addEventListener('focusout', function () {
+      resumeTimer(id);
+    });
+
+    return el;
+  }
+
+  function mountToast(id, message, type, duration) {
+    const container = getContainer();
+    const el = createToastElement(id, message, type);
+    container.appendChild(el);
+    toasts.set(id, { el, timer: null });
+    visible.push(id);
+
+    // Animación de entrada
+    requestAnimationFrame(function () {
+      el.classList.remove('opacity-0');
+      if (!prefersReducedMotion) {
+        el.classList.remove('translate-x-4');
+        el.classList.add('translate-x-0');
+      }
+      el.classList.add('opacity-100');
+    });
+
+    startTimer(id, duration);
+  }
+
+  function show(message, type, duration) {
+    const d = typeof duration === 'number' ? duration : DEFAULT_DURATION;
+    const id = 'toast-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9);
+
+    if (visible.length >= MAX_VISIBLE) {
+      queue.push({ id, message, type, duration: d });
+    } else {
+      mountToast(id, message, type, d);
+    }
+    return id;
+  }
+
+  function remove(id) {
+    const record = toasts.get(id);
+    if (!record) return;
+    const el = record.el;
+    clearTimer(id);
+
+    function finalize() {
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+      toasts.delete(id);
+      const idx = visible.indexOf(id);
+      if (idx !== -1) visible.splice(idx, 1);
+      // Mostrar siguiente en cola si existe
+      if (queue.length > 0) {
+        const next = queue.shift();
+        mountToast(next.id, next.message, next.type, next.duration);
+      }
+    }
+
+    if (prefersReducedMotion) {
+      finalize();
+      return;
+    }
+
+    el.classList.remove('translate-x-0', 'opacity-100');
+    el.classList.add('translate-x-4', 'opacity-0');
+    setTimeout(finalize, 300);
+  }
+
+  // Timers
+  const timers = new Map(); // id -> { timeoutId, remaining, start }
+
+  function startTimer(id, duration) {
+    const start = Date.now();
+    const timeoutId = setTimeout(function () {
+      remove(id);
+    }, duration);
+    timers.set(id, { timeoutId, remaining: duration, start });
+  }
+
+  function clearTimer(id) {
+    const t = timers.get(id);
+    if (t) {
+      clearTimeout(t.timeoutId);
+      timers.delete(id);
+    }
+  }
+
+  function pauseTimer(id) {
+    const t = timers.get(id);
+    if (!t) return;
+    clearTimeout(t.timeoutId);
+    const elapsed = Date.now() - t.start;
+    const remaining = Math.max(0, t.remaining - elapsed);
+    timers.set(id, { timeoutId: null, remaining, start: Date.now() });
+  }
+
+  function resumeTimer(id) {
+    const t = timers.get(id);
+    if (!t) return;
+    if (t.timeoutId) return; // ya corriendo
+    const start = Date.now();
+    const timeoutId = setTimeout(function () {
+      remove(id);
+    }, t.remaining);
+    timers.set(id, { timeoutId, remaining: t.remaining, start });
+  }
+
+  // API pública
+  const api = {
+    show: function (message, type, duration) {
+      return show(message, type || 'info', duration);
+    },
+    success: function (message, duration) {
+      return show(message, 'success', duration);
+    },
+    error: function (message, duration) {
+      return show(message, 'error', duration);
+    },
+    warning: function (message, duration) {
+      return show(message, 'warning', duration);
+    },
+    info: function (message, duration) {
+      return show(message, 'info', duration);
+    },
+    remove: remove,
+    clearAll: function () {
+      Array.from(toasts.keys()).forEach(function (id) {
+        remove(id);
+      });
+    },
+  };
+
+  // Exponer global
+  window.toastSystem = api;
+  window.showToast = {
+    success: api.success,
+    error: api.error,
+    warning: api.warning,
+    info: api.info,
+  };
+})();
+</script>
